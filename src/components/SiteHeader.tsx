@@ -3,9 +3,9 @@ export function SiteHeader() {
     <header className="site-header">
       <div className="site-header-inner">
         <div className="wordmark">
-          <div className="wordmark-glyph">CH</div>
+          <div className="wordmark-glyph">TH</div>
           <div>
-            <div className="wordmark-text">ChainHound</div>
+            <div className="wordmark-text">TraceHound</div>
             <div className="wordmark-tag">on-chain investigation agent</div>
           </div>
         </div>

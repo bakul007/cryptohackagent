@@ -1,5 +1,5 @@
 // Pulls the official OFAC SDN "advanced" XML and extracts real, currently-sanctioned
-// digital currency addresses for the chains ChainHound supports (ETH/BSC/ARB, plus
+// digital currency addresses for the chains TraceHound supports (ETH/BSC/ARB, plus
 // USDC/USDT which are ERC-20 tokens on the same address format). Writes the result into
 // data/watchlist.json, preserving the burn/zero entries already there.
 //
@@ -17,7 +17,7 @@ const { XMLParser } = require("fast-xml-parser");
 const SDN_URL = "https://www.treasury.gov/ofac/downloads/sanctions/1.0/sdn_advanced.xml";
 const WATCHLIST_PATH = path.join(__dirname, "..", "data", "watchlist.json");
 
-// ChainHound only traces EVM chains, so only 0x-format addresses are ever checkable —
+// TraceHound only traces EVM chains, so only 0x-format addresses are ever checkable —
 // OFAC's "USDT" feature type in particular covers Tether on any chain (mostly Tron/T...
 // addresses), which would just be dead weight here.
 const EVM_ADDRESS_RE = /^0x[a-fA-F0-9]{40}$/;

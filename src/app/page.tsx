@@ -75,7 +75,7 @@ export default function Home() {
           </div>
           <h1>Trace where exploited funds moved</h1>
           <p className="subtitle">
-            Give ChainHound a seed address and it walks live outgoing transfers hop by hop,
+            Give TraceHound a seed address and it walks live outgoing transfers hop by hop,
             flags anything on your watchlist, and has an agent narrate the trace in plain
             English. Built as a scoped, honest MVP — see the scope note below before treating
             any output as authoritative.
@@ -135,7 +135,7 @@ export default function Home() {
         {graph && <LetterDrafter graph={graph} isSample={isSample} />}
 
         <div className="scope-footer">
-          <strong>Scope note:</strong> ChainHound follows live public on-chain transfers, narrates
+          <strong>Scope note:</strong> TraceHound follows live public on-chain transfers, narrates
           them with an LLM agent, and can draft a demand letter from the trace facts — it does not
           have a proprietary attribution database, cannot demix cross-chain/mixer flows, and
           cannot itself freeze funds (only an exchange&apos;s compliance team can do that, and

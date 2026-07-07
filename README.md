@@ -1,8 +1,8 @@
-# ChainHound
+# TraceHound
 
-**Live:** https://cryptohackagent.vercel.app
+**Live:** https://tracehound.vercel.app
 
-![ChainHound screenshot](docs/screenshot.png)
+![TraceHound screenshot](docs/screenshot.png)
 
 Agentic on-chain hack tracer, built for the gap institutional vendors (Chainalysis, TRM Labs,
 Elliptic) leave open: individual victims and small cases that are too small for those vendors to

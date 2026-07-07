@@ -1,5 +1,5 @@
 {
-  "name": "cryptohackagent",
+  "name": "tracehound",
   "version": "0.1.0",
   "private": true,
   "description": "Agentic on-chain hack tracer: walks live transaction hops from a compromised address, flags known-risk addresses, and narrates the trace in plain English.",
