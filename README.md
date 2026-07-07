@@ -8,6 +8,10 @@ wallet), and it:
 2. Flags any address on your watchlist (`data/watchlist.json`).
 3. Has an LLM agent narrate the trace in plain English — this narration step, not the hop-walk,
    is the actual differentiator over clicking through a block explorer by hand.
+4. Can draft a demand/freeze-request letter from the real trace facts (loss amount + optional
+   FBI IC3 complaint number), for victims whose case is too small for a Chainalysis/TRM-tier
+   vendor to prioritize. It never claims a specific exchange relationship, never claims the
+   letter itself can compel a freeze, and always tells the victim to file with IC3 regardless.
 
 ## What this is not
 
@@ -20,10 +24,9 @@ Read this before treating any output as authoritative:
   fabricate here. Populate the watchlist yourself from sources you trust:
   - OFAC SDN list: https://ofac.treasury.gov/specially-designated-nationals-list-sdn-list
   - Community datasets: https://github.com/OffcierCia/On-Chain-Investigations-Tools-List
-- **No freezing capability.** Only an exchange's compliance team can freeze funds, and they act
-  on requests from vendors/law enforcement they already have a relationship with. This tool can
-  help you build the evidence trail for a freeze request letter; it cannot send one or make an
-  exchange act on it.
+- **No freezing capability.** Only an exchange's compliance team can freeze funds, and generally
+  only with law enforcement legal process behind it. This tool drafts the letter from real trace
+  facts; it never sends it, never claims an exchange relationship, and never guarantees a hold.
 - **No cross-chain bridge/mixer demixing.** Following funds through a bridge or a mixer like
   Tornado Cash requires dedicated heuristics this MVP doesn't implement.
 - **Not court-admissible chain of custody.** No cryptographic proof of data integrity, no expert
@@ -53,6 +56,7 @@ src/
     page.tsx              UI: address form, results, narrative
     api/trace/route.ts    server-side chain walk (keeps API keys off the client)
     api/narrate/route.ts  LLM narration of the trace graph
+    api/draft-letter/     LLM-drafted demand/freeze-request letter from trace facts
   lib/
     etherscan.ts           Etherscan v2 API client
     trace.ts               BFS outward walk, fan-out capping, watchlist flagging
@@ -63,10 +67,6 @@ data/
 
 ## Roadmap ideas (not built — future scope)
 
-- Legal freeze-request-letter drafting from a completed trace (this is the piece that's
-  actually valuable and legally differentiated — a template + facts-of-the-trace generator for
-  letters to exchange compliance teams, for cases too small for the Feds to prioritize).
-  Requires legal review before shipping as a real product feature.
 - Incoming-transfer tracing (where funds *came from*), not just outward.
 - Bridge-hop following.
 - Persistent case storage so a trace can be revisited/exported as a report (PDF).

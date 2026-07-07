@@ -6,6 +6,7 @@ import { Chain } from "@/lib/etherscan";
 import { TraceResults } from "@/components/TraceResults";
 import { NarrativeReport } from "@/components/NarrativeReport";
 import { SiteHeader } from "@/components/SiteHeader";
+import { LetterDrafter } from "@/components/LetterDrafter";
 import { sampleGraph, sampleChain, sampleNarrative } from "@/lib/sampleTrace";
 
 export default function Home() {
@@ -131,13 +132,16 @@ export default function Home() {
 
         {graph && chain && <TraceResults graph={graph} chain={chain} />}
         {(narrative || narrating) && <NarrativeReport narrative={narrative} loading={narrating} />}
+        {graph && <LetterDrafter graph={graph} isSample={isSample} />}
 
         <div className="scope-footer">
-          <strong>Scope note:</strong> ChainHound follows live public on-chain transfers and
-          narrates them with an LLM agent — it does not have a proprietary attribution database,
-          cannot demix cross-chain/mixer flows, and cannot freeze funds (only an exchange&apos;s
-          compliance team can do that). Treat output as a fast first look, not a verified
-          forensic report. Full scope is documented in the repo README.
+          <strong>Scope note:</strong> ChainHound follows live public on-chain transfers, narrates
+          them with an LLM agent, and can draft a demand letter from the trace facts — it does not
+          have a proprietary attribution database, cannot demix cross-chain/mixer flows, and
+          cannot itself freeze funds (only an exchange&apos;s compliance team can do that, and
+          usually only with law enforcement involved). Treat output as a fast first look and a
+          drafting aid, not a verified forensic report or legal advice. Full scope is documented
+          in the repo README.
         </div>
       </div>
     </>
