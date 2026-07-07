@@ -10,7 +10,8 @@ prioritize, and too niche for the FBI to move fast on. Give it a seed address (e
 contract or a hacker's wallet), and it:
 
 1. Walks live outgoing transfers N hops out using the real Etherscan v2 API (works across
-   Ethereum, BNB Chain, Polygon, Arbitrum — anywhere Etherscan's unified API covers).
+   Ethereum, BNB Chain, Polygon, Arbitrum — anywhere Etherscan's unified API covers), rendered as
+   a radial hop-by-hop graph (seed at center, watchlist hits highlighted) alongside a full table.
 2. Flags any address on the watchlist (`data/watchlist.json`) — populated with **real, current
    OFAC SDN-sanctioned digital currency addresses** (105 as of this writing, EVM-format only:
    ETH/ARB/BSC/USDC/USDT-on-EVM), pulled directly from the U.S. Treasury's official SDN list.

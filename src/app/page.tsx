@@ -4,6 +4,7 @@ import { useState } from "react";
 import { TraceGraph } from "@/lib/trace";
 import { Chain } from "@/lib/etherscan";
 import { TraceResults } from "@/components/TraceResults";
+import { TraceGraphView } from "@/components/TraceGraphView";
 import { NarrativeReport } from "@/components/NarrativeReport";
 import { SiteHeader } from "@/components/SiteHeader";
 import { LetterDrafter } from "@/components/LetterDrafter";
@@ -130,6 +131,7 @@ export default function Home() {
           <div className="sample-banner">SAMPLE DATA — fabricated for demonstration, not a real trace</div>
         )}
 
+        {graph && chain && <TraceGraphView graph={graph} chain={chain} />}
         {graph && chain && <TraceResults graph={graph} chain={chain} />}
         {(narrative || narrating) && <NarrativeReport narrative={narrative} loading={narrating} />}
         {graph && <LetterDrafter graph={graph} isSample={isSample} />}

@@ -465,6 +465,90 @@ table.trace-table {
   color: var(--text);
 }
 
+.graph-wrap {
+  display: flex;
+  justify-content: center;
+  background: var(--bg-alt);
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.graph-svg {
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+}
+
+.graph-edge {
+  stroke: var(--border);
+  stroke-width: 1.4;
+}
+
+.graph-edge-flagged {
+  stroke: var(--danger);
+  stroke-width: 1.6;
+  opacity: 0.7;
+}
+
+.graph-node {
+  fill: var(--panel-raised);
+  stroke: var(--accent);
+  stroke-width: 1.6;
+  cursor: pointer;
+  transition: r 120ms ease;
+}
+
+.graph-node-seed {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+
+.graph-node-flagged {
+  fill: var(--danger);
+  stroke: var(--danger);
+}
+
+.graph-label {
+  fill: var(--muted);
+  font-family: var(--mono);
+  font-size: 9px;
+}
+
+.graph-legend {
+  display: flex;
+  gap: 18px;
+  margin-top: 12px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.graph-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legend-seed {
+  background: var(--accent);
+}
+
+.legend-flagged {
+  background: var(--danger);
+}
+
+.legend-normal {
+  background: var(--panel-raised);
+  border: 1.5px solid var(--accent);
+}
+
 .meta {
   color: var(--muted);
   font-size: 0.85rem;
