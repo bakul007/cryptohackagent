@@ -1,0 +1,14 @@
+[
+  {
+    "address": "0x000000000000000000000000000000000000dEaD",
+    "label": "Burn address",
+    "category": "burn",
+    "source": "well-known convention"
+  },
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "label": "Zero address (mint/burn)",
+    "category": "burn",
+    "source": "protocol convention"
+  }
+]
