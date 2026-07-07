@@ -3,31 +3,75 @@
 import { TraceGraph } from "@/lib/trace";
 import { Chain } from "@/lib/etherscan";
 
+function shorten(addr: string) {
+  return `${addr.slice(0, 8)}…${addr.slice(-6)}`;
+}
+
 export function TraceResults({ graph, chain }: { graph: TraceGraph; chain: Chain }) {
   const sorted = [...graph.nodes].sort((a, b) => a.depth - b.depth);
+  const flaggedCount = graph.nodes.filter((n) => n.watchlistHit && n.watchlistHit.category !== "burn").length;
+  const maxDepth = Math.max(0, ...graph.nodes.map((n) => n.depth));
 
   return (
-    <div className="panel">
-      <div className="meta">
-        {graph.nodes.length} addresses touched · {graph.edges.length} transfers followed
-        {graph.truncated ? " · some fan-out was truncated (see README on raising limits)" : ""}
-      </div>
-      {sorted.map((node) => (
-        <div key={node.address} className="node-row">
-          <span>{"  ".repeat(node.depth)}{node.depth === 0 ? "●" : "└─"}</span>
-          <a
-            href={`${chain.explorerBase}/address/${node.address}`}
-            target="_blank"
-            rel="noreferrer"
-            style={{ color: "inherit" }}
-          >
-            {node.address}
-          </a>
-          {node.watchlistHit && (
-            <span className="badge">{node.watchlistHit.label}</span>
-          )}
+    <>
+      <div className="stat-grid">
+        <div className="stat-tile">
+          <div className="stat-value">{graph.nodes.length}</div>
+          <div className="stat-label">Addresses touched</div>
         </div>
-      ))}
-    </div>
+        <div className="stat-tile">
+          <div className="stat-value">{graph.edges.length}</div>
+          <div className="stat-label">Transfers followed</div>
+        </div>
+        <div className="stat-tile">
+          <div className="stat-value">{maxDepth}</div>
+          <div className="stat-label">Hops deep</div>
+        </div>
+        <div className="stat-tile">
+          <div className={`stat-value${flaggedCount > 0 ? " flagged" : ""}`}>{flaggedCount}</div>
+          <div className="stat-label">Watchlist hits</div>
+        </div>
+      </div>
+
+      <div className="panel">
+        <div className="panel-label">
+          Trace graph{graph.truncated ? " — fan-out truncated at some nodes" : ""}
+        </div>
+        <table className="trace-table">
+          <thead>
+            <tr>
+              <th>Hop</th>
+              <th>Address</th>
+              <th>Flag</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sorted.map((node) => (
+              <tr key={node.address}>
+                <td><span className="depth-pill">{node.depth === 0 ? "seed" : `+${node.depth}`}</span></td>
+                <td>
+                  <a
+                    className="addr-link"
+                    href={`${chain.explorerBase}/address/${node.address}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    title={node.address}
+                  >
+                    {shorten(node.address)}
+                  </a>
+                </td>
+                <td>
+                  {node.watchlistHit && (
+                    <span className={`badge${node.watchlistHit.category === "burn" ? " burn" : ""}`}>
+                      {node.watchlistHit.label}
+                    </span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }

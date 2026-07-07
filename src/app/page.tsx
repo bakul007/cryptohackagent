@@ -5,6 +5,8 @@ import { TraceGraph } from "@/lib/trace";
 import { Chain } from "@/lib/etherscan";
 import { TraceResults } from "@/components/TraceResults";
 import { NarrativeReport } from "@/components/NarrativeReport";
+import { SiteHeader } from "@/components/SiteHeader";
+import { sampleGraph, sampleChain, sampleNarrative } from "@/lib/sampleTrace";
 
 export default function Home() {
   const [address, setAddress] = useState("");
@@ -16,6 +18,7 @@ export default function Home() {
   const [chain, setChain] = useState<Chain | null>(null);
   const [narrative, setNarrative] = useState<string | null>(null);
   const [narrating, setNarrating] = useState(false);
+  const [isSample, setIsSample] = useState(false);
 
   async function runTrace(e: React.FormEvent) {
     e.preventDefault();
@@ -23,6 +26,7 @@ export default function Home() {
     setError(null);
     setGraph(null);
     setNarrative(null);
+    setIsSample(false);
 
     try {
       const res = await fetch("/api/trace", {
@@ -51,46 +55,91 @@ export default function Home() {
     }
   }
 
+  function loadSample() {
+    setError(null);
+    setGraph(sampleGraph);
+    setChain(sampleChain);
+    setNarrative(sampleNarrative);
+    setIsSample(true);
+  }
+
   return (
-    <div className="wrap">
-      <h1>ChainHound</h1>
-      <p className="subtitle">
-        Agentic on-chain hack tracer. Walks live outgoing transfers from a seed address and has
-        an agent narrate where funds moved. This is a scoped MVP, not a Chainalysis/TRM Labs
-        replacement — see README for exactly what it does and doesn't do.
-      </p>
-
-      <form onSubmit={runTrace} className="panel">
-        <div className="form-row">
-          <input
-            type="text"
-            placeholder="0x... exploited/seed address"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            required
-          />
-          <select value={chainKey} onChange={(e) => setChainKey(e.target.value)}>
-            <option value="ethereum">Ethereum</option>
-            <option value="bsc">BNB Chain</option>
-            <option value="polygon">Polygon</option>
-            <option value="arbitrum">Arbitrum</option>
-          </select>
-          <select value={depth} onChange={(e) => setDepth(Number(e.target.value))}>
-            <option value={1}>1 hop</option>
-            <option value={2}>2 hops</option>
-            <option value={3}>3 hops</option>
-            <option value={4}>4 hops</option>
-            <option value={5}>5 hops</option>
-          </select>
-          <button type="submit" disabled={loading}>
-            {loading ? "Tracing..." : "Trace"}
-          </button>
+    <>
+      <SiteHeader />
+      <div className="wrap">
+        <div className="hero">
+          <div className="eyebrow">
+            <span className="eyebrow-dot" />
+            LIVE ON-CHAIN DATA
+          </div>
+          <h1>Trace where exploited funds moved</h1>
+          <p className="subtitle">
+            Give ChainHound a seed address and it walks live outgoing transfers hop by hop,
+            flags anything on your watchlist, and has an agent narrate the trace in plain
+            English. Built as a scoped, honest MVP — see the scope note below before treating
+            any output as authoritative.
+          </p>
         </div>
-        {error && <div className="error">{error}</div>}
-      </form>
 
-      {graph && chain && <TraceResults graph={graph} chain={chain} />}
-      {(narrative || narrating) && <NarrativeReport narrative={narrative} loading={narrating} />}
-    </div>
+        <form onSubmit={runTrace} className="panel">
+          <div className="panel-label">New trace</div>
+          <div className="form-grid">
+            <div className="field field-address">
+              <label className="field-label">Seed address</label>
+              <input
+                type="text"
+                placeholder="0x..."
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                required
+              />
+            </div>
+            <div className="field">
+              <label className="field-label">Chain</label>
+              <select value={chainKey} onChange={(e) => setChainKey(e.target.value)}>
+                <option value="ethereum">Ethereum</option>
+                <option value="bsc">BNB Chain</option>
+                <option value="polygon">Polygon</option>
+                <option value="arbitrum">Arbitrum</option>
+              </select>
+            </div>
+            <div className="field">
+              <label className="field-label">Depth</label>
+              <select value={depth} onChange={(e) => setDepth(Number(e.target.value))}>
+                <option value={1}>1 hop</option>
+                <option value={2}>2 hops</option>
+                <option value={3}>3 hops</option>
+                <option value={4}>4 hops</option>
+                <option value={5}>5 hops</option>
+              </select>
+            </div>
+          </div>
+          <div className="actions-row">
+            <button type="submit" className="primary" disabled={loading}>
+              {loading ? "Tracing…" : "Run trace"}
+            </button>
+            <button type="button" className="ghost" onClick={loadSample} disabled={loading}>
+              View sample report
+            </button>
+          </div>
+          {error && <div className="error">{error}</div>}
+        </form>
+
+        {isSample && (
+          <div className="sample-banner">SAMPLE DATA — fabricated for demonstration, not a real trace</div>
+        )}
+
+        {graph && chain && <TraceResults graph={graph} chain={chain} />}
+        {(narrative || narrating) && <NarrativeReport narrative={narrative} loading={narrating} />}
+
+        <div className="scope-footer">
+          <strong>Scope note:</strong> ChainHound follows live public on-chain transfers and
+          narrates them with an LLM agent — it does not have a proprietary attribution database,
+          cannot demix cross-chain/mixer flows, and cannot freeze funds (only an exchange&apos;s
+          compliance team can do that). Treat output as a fast first look, not a verified
+          forensic report. Full scope is documented in the repo README.
+        </div>
+      </div>
+    </>
   );
 }
