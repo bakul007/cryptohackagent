@@ -130,24 +130,36 @@ export async function traceOutward(
   };
 }
 
-const CONTRACT_LOOKUP_CONCURRENCY = 5;
+const CONTRACT_LOOKUP_CONCURRENCY = 3;
+const BATCH_DELAY_MS = 300;
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 // Runs after the walk completes: looks up each node's verified contract name (if any), in
-// small batches so we don't fire 50+ requests at once against Etherscan's rate limit. A single
-// address failing here just leaves that node unnamed — it doesn't affect the trace itself.
+// small, throttled batches. The BFS phase already burns Etherscan calls, so firing a big batch
+// immediately afterward can trip the free-tier per-second rate limit on the first batch —
+// retrying once after a short pause resolves that; a second failure just leaves that node
+// unnamed, which doesn't affect the trace itself.
 async function enrichWithContractNames(nodes: Map<string, TraceNode>, chainId: number): Promise<void> {
   const entries = Array.from(nodes.entries());
   for (let i = 0; i < entries.length; i += CONTRACT_LOOKUP_CONCURRENCY) {
     const batch = entries.slice(i, i + CONTRACT_LOOKUP_CONCURRENCY);
     await Promise.all(
       batch.map(async ([key, node]) => {
-        try {
-          const name = await getContractName(node.address, chainId);
-          nodes.set(key, { ...node, contractName: name });
-        } catch {
-          // leave contractName as null
+        for (let attempt = 0; attempt < 2; attempt++) {
+          try {
+            const name = await getContractName(node.address, chainId);
+            nodes.set(key, { ...node, contractName: name });
+            return;
+          } catch {
+            if (attempt === 0) await sleep(BATCH_DELAY_MS);
+            // second failure: leave contractName as null
+          }
         }
       })
     );
+    if (i + CONTRACT_LOOKUP_CONCURRENCY < entries.length) await sleep(BATCH_DELAY_MS);
   }
 }
