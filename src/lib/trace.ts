@@ -1,4 +1,4 @@
-import { getNormalTransactions, getTokenTransfers, NormalTx } from "./etherscan";
+import { getNormalTransactions, getTokenTransfers, getContractName, NormalTx } from "./etherscan";
 import { checkAddress, WatchlistEntry } from "./watchlist";
 
 export type TraceEdge = {
@@ -16,6 +16,7 @@ export type TraceNode = {
   address: string;
   depth: number;
   watchlistHit: WatchlistEntry | null;
+  contractName: string | null;
 };
 
 export type TraceGraph = {
@@ -46,6 +47,7 @@ export async function traceOutward(
     address: seed,
     depth: 0,
     watchlistHit: checkAddress(seed),
+    contractName: null,
   });
 
   let frontier: string[] = [seed];
@@ -104,6 +106,7 @@ export async function traceOutward(
             address: tx.to,
             depth: depth + 1,
             watchlistHit: checkAddress(tx.to),
+            contractName: null,
           });
         }
         if (!visited.has(toKey)) {
@@ -116,6 +119,8 @@ export async function traceOutward(
     if (frontier.length === 0) break;
   }
 
+  await enrichWithContractNames(nodes, chainId);
+
   return {
     seed,
     chainId,
@@ -123,4 +128,26 @@ export async function traceOutward(
     edges,
     truncated,
   };
+}
+
+const CONTRACT_LOOKUP_CONCURRENCY = 5;
+
+// Runs after the walk completes: looks up each node's verified contract name (if any), in
+// small batches so we don't fire 50+ requests at once against Etherscan's rate limit. A single
+// address failing here just leaves that node unnamed — it doesn't affect the trace itself.
+async function enrichWithContractNames(nodes: Map<string, TraceNode>, chainId: number): Promise<void> {
+  const entries = Array.from(nodes.entries());
+  for (let i = 0; i < entries.length; i += CONTRACT_LOOKUP_CONCURRENCY) {
+    const batch = entries.slice(i, i + CONTRACT_LOOKUP_CONCURRENCY);
+    await Promise.all(
+      batch.map(async ([key, node]) => {
+        try {
+          const name = await getContractName(node.address, chainId);
+          nodes.set(key, { ...node, contractName: name });
+        } catch {
+          // leave contractName as null
+        }
+      })
+    );
+  }
 }

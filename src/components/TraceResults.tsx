@@ -61,6 +61,7 @@ export function TraceResults({ graph, chain }: { graph: TraceGraph; chain: Chain
                   </a>
                 </td>
                 <td>
+                  {node.contractName && <span className="badge contract">{node.contractName}</span>}
                   {node.watchlistHit && (
                     <span className={`badge${node.watchlistHit.category === "burn" ? " burn" : ""}`}>
                       {node.watchlistHit.label}

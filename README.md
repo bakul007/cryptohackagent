@@ -18,7 +18,11 @@ contract or a hacker's wallet), and it:
    Refresh it any time with `npm run update-watchlist`.
 3. Has an LLM agent narrate the trace in plain English — this narration step, not the hop-walk,
    is the actual differentiator over clicking through a block explorer by hand.
-4. Can draft a demand/freeze-request letter from the real trace facts (loss amount + optional
+4. Looks up each address's **verified smart contract name** (free, via Etherscan's official
+   `getsourcecode` endpoint) — e.g. flagging that a hop went to `UniswapV2Router02`, not a
+   person's wallet. This is deliberately different from exchange/mixer attribution: it's an
+   objective fact ("this address is a verified contract named X"), not a guess about ownership.
+5. Can draft a demand/freeze-request letter from the real trace facts (loss amount + optional
    FBI IC3 complaint number), for victims whose case is too small for a Chainalysis/TRM-tier
    vendor to prioritize. It never claims a specific exchange relationship, never claims the
    letter itself can compel a freeze, and always tells the victim to file with IC3 regardless.
@@ -66,9 +70,11 @@ src/
     api/narrate/route.ts  LLM narration of the trace graph
     api/draft-letter/     LLM-drafted demand/freeze-request letter from trace facts
   lib/
-    etherscan.ts           Etherscan v2 API client
-    trace.ts               BFS outward walk, fan-out capping, watchlist flagging
+    etherscan.ts           Etherscan v2 API client (tx history + verified-contract lookup)
+    trace.ts               BFS outward walk, fan-out capping, watchlist + contract enrichment
     watchlist.ts            watchlist lookup
+  components/
+    TraceGraphView.tsx      radial SVG hop graph (hand-rolled, no charting library)
 scripts/
   update-watchlist.js      pulls the real OFAC SDN advanced XML and refreshes watchlist.json
 data/

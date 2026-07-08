@@ -18,15 +18,21 @@ export const sampleGraph: TraceGraph = {
   chainId: 1,
   truncated: false,
   nodes: [
-    { address: "0x1111111111111111111111111111111111111a", depth: 0, watchlistHit: null },
-    { address: "0x2222222222222222222222222222222222222b", depth: 1, watchlistHit: null },
-    { address: "0x3333333333333333333333333333333333333c", depth: 1, watchlistHit: null },
+    { address: "0x1111111111111111111111111111111111111a", depth: 0, watchlistHit: null, contractName: null },
+    { address: "0x2222222222222222222222222222222222222b", depth: 1, watchlistHit: null, contractName: null },
+    {
+      address: "0x3333333333333333333333333333333333333c",
+      depth: 1,
+      watchlistHit: null,
+      contractName: "SAMPLE_Router (illustrative)",
+    },
     {
       address: "0x4444444444444444444444444444444444444d",
       depth: 2,
       watchlistHit: { address: "0x4444444444444444444444444444444444444d", label: "SAMPLE: flagged mixer", category: "mixer", source: "demo" },
+      contractName: null,
     },
-    { address: "0x5555555555555555555555555555555555555e", depth: 2, watchlistHit: null },
+    { address: "0x5555555555555555555555555555555555555e", depth: 2, watchlistHit: null, contractName: null },
   ],
   edges: [
     { hash: "0xaaa1", from: "0x1111111111111111111111111111111111111a", to: "0x2222222222222222222222222222222222222b", value: "5000000000000000000", valueUnit: "native", timestamp: "0", depth: 0 },

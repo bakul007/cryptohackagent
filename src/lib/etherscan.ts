@@ -76,6 +76,21 @@ export async function getNormalTransactions(
   return Array.isArray(result) ? result : [];
 }
 
+// Verified-contract name lookup — objectively true/false ("this address IS a verified contract
+// named X"), unlike attribution ("this address BELONGS TO exchange X"), which we deliberately
+// don't fabricate. Etherscan returns this for free on any address; EOAs and unverified contracts
+// just come back with an empty ContractName, which we treat as "not a named contract."
+export async function getContractName(address: string, chainId: number): Promise<string | null> {
+  const result = await callEtherscan({
+    chainid: String(chainId),
+    module: "contract",
+    action: "getsourcecode",
+    address,
+  });
+  const name = Array.isArray(result) ? result[0]?.ContractName : undefined;
+  return name && name.length > 0 ? name : null;
+}
+
 // ERC-20 token transfers — stolen funds are very often moved as tokens (USDT/USDC/etc), not native ETH.
 export async function getTokenTransfers(
   address: string,

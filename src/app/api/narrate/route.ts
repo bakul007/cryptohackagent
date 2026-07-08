@@ -19,6 +19,7 @@ export async function POST(req: NextRequest) {
   }
 
   const flaggedNodes = graph.nodes.filter((n) => n.watchlistHit);
+  const contractNodes = graph.nodes.filter((n) => n.contractName);
   const summaryForModel = {
     seedAddress: graph.seed,
     hopsFollowed: Math.max(0, ...graph.nodes.map((n) => n.depth)),
@@ -30,6 +31,11 @@ export async function POST(req: NextRequest) {
       depth: n.depth,
       label: n.watchlistHit?.label,
       category: n.watchlistHit?.category,
+    })),
+    verifiedContractsEncountered: contractNodes.map((n) => ({
+      address: n.address,
+      depth: n.depth,
+      contractName: n.contractName,
     })),
     edges: graph.edges.slice(0, 100).map((e) => ({
       from: e.from,
@@ -56,7 +62,9 @@ blockchain. Write a short, plain-English investigative narrative summarizing whe
 moved. Be factual and hedge appropriately — this data source only has actual watchlist hits
 (no fabricated ones), so if nothing was flagged, say so plainly rather than implying wrongdoing.
 Do not speculate about identity beyond what's in the data. Do not claim funds were "stolen" —
-you don't know that; just describe the movement.
+you don't know that; just describe the movement. If any hop touched a verified smart contract
+(see verifiedContractsEncountered), mention it by name — e.g. "funds passed through the verified
+contract X" — since that's a real, sourced fact, distinct from any watchlist flag.
 
 Trace data:
 ${JSON.stringify(summaryForModel, null, 2)}`,

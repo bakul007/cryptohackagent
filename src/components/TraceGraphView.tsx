@@ -102,7 +102,15 @@ export function TraceGraphView({ graph, chain }: { graph: TraceGraph; chain: Cha
               if (!p) return null;
               const isSeed = node.depth === 0;
               const isFlagged = !!(node.watchlistHit && node.watchlistHit.category !== "burn");
+              const isContract = !!node.contractName;
               const key = node.address.toLowerCase();
+              const nodeClass = isSeed
+                ? "graph-node graph-node-seed"
+                : isFlagged
+                ? "graph-node graph-node-flagged"
+                : isContract
+                ? "graph-node graph-node-contract"
+                : "graph-node";
               return (
                 <a
                   key={key}
@@ -112,17 +120,11 @@ export function TraceGraphView({ graph, chain }: { graph: TraceGraph; chain: Cha
                   onMouseEnter={() => setHovered(key)}
                   onMouseLeave={() => setHovered(null)}
                 >
-                  <circle
-                    cx={p.x}
-                    cy={p.y}
-                    r={isSeed ? SEED_NODE_R : NODE_R}
-                    className={
-                      isSeed ? "graph-node graph-node-seed" : isFlagged ? "graph-node graph-node-flagged" : "graph-node"
-                    }
-                  />
-                  {(isSeed || isFlagged || hovered === key) && (
+                  <circle cx={p.x} cy={p.y} r={isSeed ? SEED_NODE_R : NODE_R} className={nodeClass} />
+                  {(isSeed || isFlagged || isContract || hovered === key) && (
                     <text x={p.x} y={p.y - (isSeed ? SEED_NODE_R : NODE_R) - 6} className="graph-label" textAnchor="middle">
                       {shorten(node.address)}
+                      {node.contractName ? ` (${node.contractName})` : ""}
                     </text>
                   )}
                 </a>
@@ -134,6 +136,7 @@ export function TraceGraphView({ graph, chain }: { graph: TraceGraph; chain: Cha
       <div className="graph-legend">
         <span><span className="legend-dot legend-seed" />seed</span>
         <span><span className="legend-dot legend-flagged" />watchlist hit</span>
+        <span><span className="legend-dot legend-contract" />verified contract</span>
         <span><span className="legend-dot legend-normal" />address</span>
       </div>
     </div>

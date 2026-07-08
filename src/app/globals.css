@@ -426,11 +426,17 @@ table.trace-table {
   background: rgba(255, 91, 110, 0.15);
   color: var(--danger);
   white-space: nowrap;
+  margin-right: 6px;
 }
 
 .badge.burn {
   background: rgba(139, 145, 163, 0.15);
   color: var(--muted);
+}
+
+.badge.contract {
+  background: var(--accent-dim);
+  color: var(--accent);
 }
 
 .report-card {
@@ -509,6 +515,11 @@ table.trace-table {
   stroke: var(--danger);
 }
 
+.graph-node-contract {
+  fill: var(--accent-dim);
+  stroke: var(--accent);
+}
+
 .graph-label {
   fill: var(--muted);
   font-family: var(--mono);
@@ -542,6 +553,11 @@ table.trace-table {
 
 .legend-flagged {
   background: var(--danger);
+}
+
+.legend-contract {
+  background: var(--accent-dim);
+  border: 1.5px solid var(--accent);
 }
 
 .legend-normal {
