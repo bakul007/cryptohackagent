@@ -4,10 +4,9 @@
 
 ![TraceHound screenshot](docs/screenshot.png)
 
-Agentic on-chain hack tracer, built for the gap institutional vendors (Chainalysis, TRM Labs,
-Elliptic) leave open: individual victims and small cases that are too small for those vendors to
-prioritize, and too niche for the FBI to move fast on. Give it a seed address (e.g. an exploited
-contract or a hacker's wallet), and it:
+Agentic on-chain hack tracer, built for the gap institutional vendors (Chainalysis, TRM Labs, Elliptic) leave open: individual cases too small for those vendors to prioritize, too niche for FBI to move fast on. Built from experience working with FBI and U.S. Secret Service on a hack + tracking/referring $6M of crypto crime.
+
+Give it a seed address (e.g. an exploited contract or a hacker's wallet), and it:
 
 1. Walks live outgoing transfers N hops out using the real Etherscan v2 API (works across
    Ethereum, BNB Chain, Polygon, Arbitrum — anywhere Etherscan's unified API covers), rendered as
